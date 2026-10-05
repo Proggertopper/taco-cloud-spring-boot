@@ -251,9 +251,3 @@ src/main/resources/
 ./mvnw clean package
 java -jar target/taco_cloud2-0.0.1-SNAPSHOT.jar
 ```
-
-## Author
-
-**Oleksandr Kostyrko** — Java / Spring Boot Developer
-
-This repository demonstrates practical work with Spring Boot web development, security, persistence, messaging, testing, containerization, and continuous integration.
