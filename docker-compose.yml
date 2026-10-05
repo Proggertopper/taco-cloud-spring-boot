@@ -1,0 +1,61 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: tacocloud-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/tacocloud?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: tacocloud
+      SPRING_DATASOURCE_PASSWORD: tacocloud
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TACOCLOUD_MESSAGING_ENABLED: "true"
+      KAFKA_LISTENER_AUTO_STARTUP: "true"
+      JWT_ISSUER_URI: http://localhost:9000
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: tacocloud-mysql
+    environment:
+      MYSQL_DATABASE: tacocloud
+      MYSQL_USER: tacocloud
+      MYSQL_PASSWORD: tacocloud
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: tacocloud-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+volumes:
+  mysql-data:
+  kafka-data:

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register | Taco Cloud</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+<main class="app-shell">
+    <header class="topbar">
+        <a class="brand" th:href="@{/}">
+            <img th:src="@{/images/TacoCloud2.png}" alt="Taco Cloud logo" />
+            <span>Taco Cloud</span>
+        </a>
+    </header>
+
+    <section class="panel">
+        <h1>Register</h1>
+        <form class="form-stack" method="POST" th:action="@{/register}">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+            <label class="form-row"><span>Username</span><input type="text" name="username" /></label>
+            <label class="form-row"><span>Password</span><input type="password" name="password" /></label>
+            <label class="form-row"><span>Full name</span><input type="text" name="fullname" /></label>
+            <label class="form-row"><span>Street</span><input type="text" name="street" /></label>
+            <label class="form-row"><span>City</span><input type="text" name="city" /></label>
+            <label class="form-row"><span>State</span><input type="text" name="state" /></label>
+            <label class="form-row"><span>ZIP</span><input type="text" name="zip" /></label>
+            <label class="form-row"><span>Phone</span><input type="text" name="phone" /></label>
+            <input type="submit" value="Register" />
+        </form>
+    </section>
+</main>
+</body>
+</html>
